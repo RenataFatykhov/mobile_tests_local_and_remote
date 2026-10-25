@@ -111,5 +111,3 @@ Allure-результаты: `build/allure-results`. Скриншот и XML п�
 Результат подтверждён `build/test-results/test/TEST-tests.AndroidOnboardingTests.xml`
 и статусом `passed` в Allure. Перед успешным прогоном был запущен Appium
 с параметром `--base-path /wd/hub`.
-
-Поисковые тесты на реальном телефоне и запуск на BrowserStack пока не проверены.
