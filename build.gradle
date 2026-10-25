@@ -1,0 +1,74 @@
+plugins {
+    id 'java-library'
+    id 'io.qameta.allure' version '2.12.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+def restAssuredVersion = "6.0.0",
+        allureVersion = "2.35.3",
+        selenideVersion = "7.13.0"
+
+allure {
+    report {
+        version.set("2.32.0")
+    }
+    adapter { // отвечает за появление папочки build/allure-results
+        aspectjWeaver.set(true) //обработка аннотации @Step
+        frameworks {
+            junit5 { // название фреймворка
+                adapterVersion.set("2.32.0") //версия интеграции фреймворка и Allure
+            }
+        }
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.14.3'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.14.3'
+    testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
+    testImplementation "io.rest-assured:json-schema-validator:${restAssuredVersion}"
+    testImplementation 'net.datafaker:datafaker:2.7.0'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
+    testImplementation 'org.assertj:assertj-core:3.27.7'
+    compileOnly("org.projectlombok:lombok:1.18.48")
+    annotationProcessor("org.projectlombok:lombok:1.18.48")
+    testCompileOnly("org.projectlombok:lombok:1.18.48")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.48")
+    testImplementation "io.qameta.allure:allure-selenide:${allureVersion}"
+    testImplementation "io.qameta.allure:allure-rest-assured:${allureVersion}"
+    testImplementation "com.codeborne:selenide:${selenideVersion}"
+    testImplementation "io.appium:java-client:10.0.0"
+    testImplementation "org.aeonbits.owner:owner:1.0.12"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    def deviceHost = System.getProperty("deviceHost", "emulation")
+    if (!(deviceHost in ["browserstack", "emulation", "real"])) {
+        throw new GradleException("deviceHost must be browserstack, emulation or real")
+    }
+    useJUnitPlatform {
+        def platform = System.getProperty("platform", "android")
+        if (!(platform in ["android", "ios"])) {
+            throw new GradleException("platform must be android or ios")
+        }
+        if (platform == "ios" && deviceHost != "browserstack") {
+            throw new GradleException("iOS tests require -DdeviceHost=browserstack")
+        }
+        if (platform) {
+            includeTags(platform)
+        }
+    }
+    systemProperties(System.getProperties())
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+}
