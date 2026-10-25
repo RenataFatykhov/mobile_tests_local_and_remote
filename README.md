@@ -93,4 +93,23 @@ Allure-результаты: `build/allure-results`. Скриншот и XML п�
 - `AndroidSearchTests` — 2 теста прошли (отдельный запуск).
 - Запуск iOS с `deviceHost=real` отклоняется понятной ошибкой конфигурации.
 
-Запуски на реальном телефоне и BrowserStack не выполнялись.
+### Реальный телефон
+
+25.10.2026, 22:09 (МСК), REALME C71 (`RMX5303`), Android 15, Appium 2.4.1.
+
+Команда запуска:
+
+```bash
+./gradlew test -DdeviceHost=real -Ddevice.udid=007448c00c05c3a3 --tests tests.AndroidOnboardingTests
+```
+
+Результат: **1 тест прошёл, 0 ошибок, 0 падений, 0 пропусков**.
+`AndroidOnboardingTests` проверил заголовки всех четырёх экранов onboarding,
+завершение знакомства и открытие главной страницы Wikipedia.
+Время теста по JUnit-отчёту — 23,746 с.
+
+Результат подтверждён `build/test-results/test/TEST-tests.AndroidOnboardingTests.xml`
+и статусом `passed` в Allure. Перед успешным прогоном был запущен Appium
+с параметром `--base-path /wd/hub`.
+
+Поисковые тесты на реальном телефоне и запуск на BrowserStack пока не проверены.
