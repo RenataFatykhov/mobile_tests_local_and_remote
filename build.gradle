@@ -72,3 +72,11 @@ test {
         showStandardStreams = true
     }
 }
+
+// Проверки загрузчика APK без телефона, эмулятора и Appium.
+tasks.register('unitTest', Test) {
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform { includeTags 'unit' }
+    testLogging { events 'passed', 'failed', 'skipped' }
+}
