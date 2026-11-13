@@ -1,7 +1,29 @@
-# mobile_tests_local_and_remote
+# Wikipedia · Mobile автотесты
 
-Домашнее задание: onboarding Wikipedia и запуск мобильных тестов на трёх стендах.
-Java 17, Gradle, JUnit 5, Selenide, Appium, OWNER, Allure.
+Дипломный проект по мобильному тестированию: onboarding, поиск и открытие статьи
+в Wikipedia для Android. Дополнительный iOS smoke-тест проверяет приложение UI Elements
+в BrowserStack — это отдельное приложение, не Wikipedia.
+
+![Java](https://img.shields.io/badge/Java-17-ED8B00?logo=openjdk&logoColor=white) ![JUnit](https://img.shields.io/badge/JUnit-5-25A162?logo=junit5&logoColor=white) ![Gradle](https://img.shields.io/badge/Gradle-02303A?logo=gradle&logoColor=white) ![Allure](https://img.shields.io/badge/Allure-Report-FF6B35) ![Appium](https://img.shields.io/badge/Appium-4724-662D91?logo=appium&logoColor=white)
+
+[Репозиторий](https://github.com/RenataFatykhov/mobile_tests_local_and_remote) ·
+[Ручные тест-кейсы](docs/manual-test-cases.md)
+
+## Архитектура
+
+- Screen Objects отделяют сценарии от локаторов: onboarding, поиск, статья, UI Elements.
+- Appium-драйвер выбирается через `deviceHost`, настройки читаются библиотекой OWNER.
+- JUnit-теги разделяют Android, iOS и инфраструктурные проверки.
+- Allure-шаги, скриншоты, XML страницы; для BrowserStack также ссылка на видео.
+- Загрузчик APK проверяет тип файла и не сохраняет неудачную загрузку как рабочий APK.
+
+| Стенд | Android Wikipedia | iOS UI Elements |
+| --- | --- | --- |
+| Эмулятор (`emulation`) | Да | Нет |
+| Реальный телефон (`real`) | Да | Нет |
+| BrowserStack (`browserstack`) | Да | Да |
+
+Стек: Java 17, Gradle, JUnit 5, Selenide, Appium, OWNER, Allure.
 
 ## Тесты
 
@@ -76,6 +98,7 @@ org.wikipedia.alpha.
 
 ```bash
 ./gradlew testClasses
+./gradlew unitTest   # 4 проверки загрузчика APK без Appium
 ./gradlew allureReport
 ```
 
@@ -84,7 +107,7 @@ Allure-результаты: `build/allure-results`. Скриншот и XML п�
 стендах, видео запрашивается только для BrowserStack после закрытия сессии.
 Повторный запуск без изменений можно выполнить с `--rerun-tasks`.
 
-## Результат локальной проверки
+## Предыдущие результаты локальной проверки
 
 25.10.2026, AVD `New_Device_API_34`, Android 14, Appium 2.4.1:
 
@@ -100,7 +123,7 @@ Allure-результаты: `build/allure-results`. Скриншот и XML п�
 Команда запуска:
 
 ```bash
-./gradlew test -DdeviceHost=real -Ddevice.udid=007448c00c05c3a3 --tests tests.AndroidOnboardingTests
+./gradlew test -DdeviceHost=real -Ddevice.udid=YOUR_SERIAL --tests tests.AndroidOnboardingTests
 ```
 
 Результат: **1 тест прошёл, 0 ошибок, 0 падений, 0 пропусков**.
@@ -111,3 +134,12 @@ Allure-результаты: `build/allure-results`. Скриншот и XML п�
 Результат подтверждён `build/test-results/test/TEST-tests.AndroidOnboardingTests.xml`
 и статусом `passed` в Allure. Перед успешным прогоном был запущен Appium
 с параметром `--base-path /wd/hub`.
+
+## Ручное тестирование
+
+[Тест-кейсы Wikipedia](docs/manual-test-cases.md): onboarding, поиск, открытие статьи,
+отмена поиска и поведение без сети. Статус ручных кейсов — «Не выполнен» до отдельного прогона.
+
+## Автор
+
+Рената Фатыхова · [Telegram @renata_fatykhov](https://t.me/renata_fatykhov)
