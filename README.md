@@ -112,20 +112,11 @@ Job использует Gradle Wrapper, передаёт `deviceHost=browsersta
 читаются из `src/test/resources/config/browserstack.properties`, как в старой версии
 проекта; отдельный Credentials Binding для них не требуется.
 
-[Jenkinsfile](Jenkinsfile) оставлен как альтернативный вариант для Pipeline job.
-Текущая Freestyle job его не использует.
-
 Для запуска Freestyle job нужно выбрать `platform` в **Build with Parameters**,
 затем открыть **Allure Report** в завершённой сборке.
 
-Для альтернативного Pipeline-варианта нужны плагины Pipeline, Credentials Binding,
-JUnit и Allure, настроенный Allure Commandline и credential типа
-**Username with password** с ID `browserstack`. После этого можно создать
-**Pipeline from SCM** с Script Path `Jenkinsfile`; его параметры называются
-`PLATFORM` и `APP_URL`.
-
-Ключи берутся из Credentials и не передаются в параметрах сборки или Git. Для Android нужна
-сборка Wikipedia с onboarding, для iOS — UI Elements. Эмулятор на Jenkins не требуется.
+Для Android нужна сборка Wikipedia с onboarding, для iOS — UI Elements.
+Эмулятор на Jenkins не требуется.
 
 ### Результат запуска в Jenkins
 
