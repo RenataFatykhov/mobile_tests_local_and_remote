@@ -127,6 +127,24 @@ JUnit и Allure, настроенный Allure Commandline и credential тип�
 Ключи берутся из Credentials и не передаются в параметрах сборки или Git. Для Android нужна
 сборка Wikipedia с onboarding, для iOS — UI Elements. Эмулятор на Jenkins не требуется.
 
+### Результат запуска в Jenkins
+
+Удалённый Android-прогон в BrowserStack успешно выполнен в сборке
+[#8](https://jenkins.qa.guru/job/mobile_tests/8/): мобильные и инфраструктурные
+тесты прошли, результаты опубликованы в Allure Report и Allure TestOps.
+
+**Успешная сборка Jenkins**
+
+![Успешная сборка мобильных тестов в Jenkins](docs/images/jenkins-successful-build.png)
+
+**Allure Report — 7 тестов, 100% успешно**
+
+![Результаты мобильных тестов в Allure Report](docs/images/allure-jenkins-report.png)
+
+**Дашборд проекта в Allure TestOps**
+
+![Дашборд мобильного проекта в Allure TestOps](docs/images/allure-testops-dashboard.png)
+
 ## Проверка и отчёты
 
 ```bash
