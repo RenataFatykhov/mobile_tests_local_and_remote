@@ -83,8 +83,9 @@ android.app.activity=org.wikipedia.main.MainActivity
 ## BrowserStack
 
 В `src/test/resources/config/browserstack.properties` перенесены настройки приложений
-из `mobile_tests`. Ключи хранятся отдельно в игнорируемом `browserstack.local.properties`.
-Можно также использовать переменные окружения `BROWSERSTACK_USER`, `BROWSERSTACK_KEY`.
+и данные подключения из старого проекта `mobile_tests`. Их также можно переопределить
+через параметры `-D`, переменные окружения `BROWSERSTACK_USER`, `BROWSERSTACK_KEY`
+или игнорируемый файл `browserstack.local.properties`.
 Приоритет: параметры `-D`, окружение, локальный файл, файл из resources.
 Если загруженное приложение истекло, загрузить его снова и передать новый `android.app`
 или `ios.app` (`bs://...`). Для onboarding нужна сборка Wikipedia с четырьмя экранами
@@ -98,18 +99,33 @@ org.wikipedia.alpha.
 
 ## Jenkins и Allure
 
-В репозитории подготовлен [Jenkinsfile](Jenkinsfile): проверка параметров → инфраструктурные
-тесты → мобильные тесты BrowserStack → публикация JUnit и Allure (также при падениях).
-Удалённая Jenkins job для этого pipeline пока не создана и запуск не подтверждён.
+Удалённый запуск настроен в Freestyle job
+[mobile_tests](https://jenkins.qa.guru/job/mobile_tests/): инфраструктурные тесты →
+мобильные тесты выбранной платформы в BrowserStack → публикация Allure
+(также при падениях).
 
-Для подключения:
+Job использует Gradle Wrapper, передаёт `deviceHost=browserstack` и все параметры
+сборки как системные свойства. Параметр `platform` позволяет выбрать `android`
+или `ios` (`android` по умолчанию). Устройства задаются параметрами
+`BROWSERSTACK_ANDROID_DEVICE`, `BROWSERSTACK_ANDROID_OS_VERSION`,
+`BROWSERSTACK_IOS_DEVICE`, `BROWSERSTACK_IOS_OS_VERSION`. Логин и ключ BrowserStack
+подключены из Jenkins Credentials в переменные `BROWSERSTACK_USER` и
+`BROWSERSTACK_KEY`.
 
-1. На Jenkins-агенте установить JDK 17, обеспечить доступ к Maven Central и BrowserStack.
-2. Установить плагины Pipeline, Credentials Binding, JUnit и Allure; настроить Allure Commandline в Tools.
-3. Создать Username with password credential с ID `browserstack`: username и access key BrowserStack.
-4. Создать Pipeline from SCM для этого репозитория, Script Path — `Jenkinsfile`.
-5. В Build with Parameters выбрать `PLATFORM`, указать `APP_URL` загруженной сборки (`bs://...`).
-6. После запуска открыть пункт **Allure Report** в сборке Jenkins.
+[Jenkinsfile](Jenkinsfile) оставлен как альтернативный вариант для Pipeline job.
+Текущая Freestyle job его не использует.
+
+Текущая Freestyle job использует две записи Jenkins типа **Secret text**:
+`browserstack_username` и `browserstack_access_key`. Credentials Binding передаёт
+их в `BROWSERSTACK_USER` и `BROWSERSTACK_KEY`; секреты не должны быть строковыми
+параметрами job или храниться в репозитории. Для запуска нужно выбрать `platform`
+в **Build with Parameters**, затем открыть **Allure Report** в завершённой сборке.
+
+Для альтернативного Pipeline-варианта нужны плагины Pipeline, Credentials Binding,
+JUnit и Allure, настроенный Allure Commandline и credential типа
+**Username with password** с ID `browserstack`. После этого можно создать
+**Pipeline from SCM** с Script Path `Jenkinsfile`; его параметры называются
+`PLATFORM` и `APP_URL`.
 
 Ключи берутся из Credentials и не передаются в параметрах сборки или Git. Для Android нужна
 сборка Wikipedia с onboarding, для iOS — UI Elements. Эмулятор на Jenkins не требуется.
