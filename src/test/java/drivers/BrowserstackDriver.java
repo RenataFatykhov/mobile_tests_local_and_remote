@@ -19,8 +19,7 @@ import java.util.Map;
 public class BrowserstackDriver implements WebDriverProvider {
     private final BrowserstackConfig config = ConfigFactory.create(
             BrowserstackConfig.class,
-            System.getProperties(),
-            System.getenv()
+            System.getProperties()
     );
 
     @Nonnull

@@ -83,10 +83,10 @@ android.app.activity=org.wikipedia.main.MainActivity
 ## BrowserStack
 
 В `src/test/resources/config/browserstack.properties` перенесены настройки приложений
-и данные подключения из старого проекта `mobile_tests`. Их также можно переопределить
-через параметры `-D`, переменные окружения `BROWSERSTACK_USER`, `BROWSERSTACK_KEY`
-или игнорируемый файл `browserstack.local.properties`.
-Приоритет: параметры `-D`, окружение, локальный файл, файл из resources.
+и данные подключения из старого проекта `mobile_tests`. Их можно переопределить
+через параметры `-D` или игнорируемый файл `browserstack.local.properties`.
+Приоритет: параметры `-D`, локальный файл, файл из resources. Переменные окружения
+не используются, поэтому старые Jenkins Credentials не перекрывают значения файла.
 Если загруженное приложение истекло, загрузить его снова и передать новый `android.app`
 или `ios.app` (`bs://...`). Для onboarding нужна сборка Wikipedia с четырьмя экранами
 и включённым onboarding. Локальные локаторы поддерживают пакеты org.wikipedia и
@@ -109,17 +109,14 @@ Job использует Gradle Wrapper, передаёт `deviceHost=browsersta
 или `ios` (`android` по умолчанию). Устройства задаются параметрами
 `BROWSERSTACK_ANDROID_DEVICE`, `BROWSERSTACK_ANDROID_OS_VERSION`,
 `BROWSERSTACK_IOS_DEVICE`, `BROWSERSTACK_IOS_OS_VERSION`. Логин и ключ BrowserStack
-подключены из Jenkins Credentials в переменные `BROWSERSTACK_USER` и
-`BROWSERSTACK_KEY`.
+читаются из `src/test/resources/config/browserstack.properties`, как в старой версии
+проекта; отдельный Credentials Binding для них не требуется.
 
 [Jenkinsfile](Jenkinsfile) оставлен как альтернативный вариант для Pipeline job.
 Текущая Freestyle job его не использует.
 
-Текущая Freestyle job использует две записи Jenkins типа **Secret text**:
-`browserstack_username` и `browserstack_access_key`. Credentials Binding передаёт
-их в `BROWSERSTACK_USER` и `BROWSERSTACK_KEY`; секреты не должны быть строковыми
-параметрами job или храниться в репозитории. Для запуска нужно выбрать `platform`
-в **Build with Parameters**, затем открыть **Allure Report** в завершённой сборке.
+Для запуска Freestyle job нужно выбрать `platform` в **Build with Parameters**,
+затем открыть **Allure Report** в завершённой сборке.
 
 Для альтернативного Pipeline-варианта нужны плагины Pipeline, Credentials Binding,
 JUnit и Allure, настроенный Allure Commandline и credential типа

@@ -6,7 +6,10 @@ import org.aeonbits.owner.ConfigFactory;
 import static io.restassured.RestAssured.given;
 
 public class Browserstack {
-    private static final BrowserstackConfig config = ConfigFactory.create(BrowserstackConfig.class, System.getProperties(), System.getenv());
+    private static final BrowserstackConfig config = ConfigFactory.create(
+            BrowserstackConfig.class,
+            System.getProperties()
+    );
 
     public static String videoUrl(String sessionId) {
 
