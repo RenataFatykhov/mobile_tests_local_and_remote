@@ -1,5 +1,7 @@
 # Wikipedia · Mobile автотесты
 
+<img src="https://upload.wikimedia.org/wikipedia/commons/8/80/Wikipedia-logo-v2.svg" width="110" alt="Логотип Wikipedia">
+
 Дипломный проект по мобильному тестированию: onboarding, поиск и открытие статьи
 в Wikipedia для Android. Дополнительный iOS smoke-тест проверяет приложение UI Elements
 в BrowserStack — это отдельное приложение, не Wikipedia.
@@ -94,6 +96,24 @@ org.wikipedia.alpha.
 ./gradlew test -DdeviceHost=browserstack -Dplatform=ios
 ```
 
+## Jenkins и Allure
+
+В репозитории подготовлен [Jenkinsfile](Jenkinsfile): проверка параметров → инфраструктурные
+тесты → мобильные тесты BrowserStack → публикация JUnit и Allure (также при падениях).
+Удалённая Jenkins job для этого pipeline пока не создана и запуск не подтверждён.
+
+Для подключения:
+
+1. На Jenkins-агенте установить JDK 17, обеспечить доступ к Maven Central и BrowserStack.
+2. Установить плагины Pipeline, Credentials Binding, JUnit и Allure; настроить Allure Commandline в Tools.
+3. Создать Username with password credential с ID `browserstack`: username и access key BrowserStack.
+4. Создать Pipeline from SCM для этого репозитория, Script Path — `Jenkinsfile`.
+5. В Build with Parameters выбрать `PLATFORM`, указать `APP_URL` загруженной сборки (`bs://...`).
+6. После запуска открыть пункт **Allure Report** в сборке Jenkins.
+
+Ключи берутся из Credentials и не передаются в параметрах сборки или Git. Для Android нужна
+сборка Wikipedia с onboarding, для iOS — UI Elements. Эмулятор на Jenkins не требуется.
+
 ## Проверка и отчёты
 
 ```bash
@@ -139,6 +159,15 @@ Allure-результаты: `build/allure-results`. Скриншот и XML п�
 
 [Тест-кейсы Wikipedia](docs/manual-test-cases.md): onboarding, поиск, открытие статьи,
 отмена поиска и поведение без сети. Статус ручных кейсов — «Не выполнен» до отдельного прогона.
+
+## Пример Allure-отчёта
+
+Скриншоты построены из сохранённых результатов локального Android-прогона
+**26.10.2026, 09:35–09:36 (МСК)**: поиск, открытие статьи и onboarding — **3/3 passed**.
+Это архивный мобильный прогон, не результат новой Jenkins job.
+
+![Обзор мобильного прогона](docs/images/allure-overview.png)
+![Шаги onboarding](docs/images/allure-onboarding.png)
 
 ## Автор
 
